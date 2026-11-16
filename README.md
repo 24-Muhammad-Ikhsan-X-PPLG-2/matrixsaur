@@ -1,58 +1,174 @@
 # MATRIXSAUR
 
-Aplikasi belajar matriks berbasis Next.js, React, dan Supabase. Seluruh konten
-(chapter, materi, soal, kunci jawaban, dinosaurus, lencana) serta progres
-pengguna disimpan di Supabase — tidak ada mock data saat aplikasi berjalan.
+<p align="center">
+  <strong>Belajar matriks, satu petualangan pada satu waktu.</strong><br />
+  Aplikasi belajar interaktif yang mengubah materi matematika menjadi perjalanan
+  bersama dinosaurus, tantangan, dan progres belajar yang tersimpan.
+</p>
 
-## Arsitektur singkat
+<p align="center">
+  <img src="https://img.shields.io/badge/Next.js-16.4.5-000000?logo=nextdotjs&logoColor=white" alt="Next.js 16.4.5" />
+  <img src="https://img.shields.io/badge/React-19-149ECA?logo=react&logoColor=white" alt="React 19" />
+  <img src="https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white" alt="TypeScript 5" />
+  <img src="https://img.shields.io/badge/Supabase-Backend-3FCF8E?logo=supabase&logoColor=white" alt="Supabase" />
+  <img src="https://img.shields.io/badge/Bun-1.4.2-000000?logo=bun&logoColor=white" alt="Bun 1.4.2" />
+</p>
 
-- `supabase/migrations/20261116000000_initial_schema.sql` — skema tabel, RLS,
-  dan hak akses.
-- `supabase/migrations/20261116000100_game_functions.sql` — aturan permainan,
-  RPC, dan trigger pengguna baru.
-- `scripts/seed.ts` — menanam konten dari `src/data` ke Supabase. Folder
-  `src/data` hanya dipakai seeder, bukan oleh aplikasi.
-- `src/lib/data/*` — pembacaan data per halaman di server.
-- `src/lib/actions/*` — server action yang memanggil RPC Supabase.
+## Tentang proyek
 
-Semua penulisan progres (XP, streak, telur, lencana, riwayat latihan) dilakukan
-lewat RPC `security definer`. Kunci jawaban soal hanya tersimpan di tabel
-`quiz_question_keys` dan tidak pernah dikirim ke klien; pemeriksaan jawaban
-dilakukan oleh RPC.
+MATRIXSAUR adalah aplikasi edukasi untuk mempelajari matriks melalui kurikulum
+bertahap dan pengalaman bergaya petualangan. Pengguna dapat mempelajari konsep,
+melihat visualisasi operasi matriks, mengerjakan latihan, serta melacak
+perkembangan belajarnya.
 
-## Menjalankan aplikasi
+Aplikasi menggunakan Supabase untuk autentikasi dan penyimpanan data. Progres
+pengguna, hasil latihan, XP, streak, koleksi, dan pencapaian tersimpan per akun.
 
-1. Salin `.env.example` menjadi `.env.local`.
-2. Isi `NEXT_PUBLIC_SUPABASE_URL` dan `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`.
-3. Isi `SUPABASE_SERVICE_ROLE_KEY` (hanya untuk seeder; jangan pakai awalan
-   `NEXT_PUBLIC_`).
-4. Atur `NEXT_PUBLIC_SITE_URL`, misalnya `http://localhost:3000`.
-5. Terapkan migrasi ke project Supabase:
-   - Dengan Supabase CLI: `supabase db push`
-   - Atau tempel isi kedua file migrasi di SQL Editor, berurutan.
-6. Tanam konten: `bun run seed`.
-7. Di **Authentication → URL Configuration**, gunakan `NEXT_PUBLIC_SITE_URL`
-   sebagai Site URL dan tambahkan `http://localhost:3000/auth/callback` ke
-   Redirect URLs.
-8. Jalankan `bun dev`, lalu buka `http://localhost:3000`.
+## Fitur
 
-Pendaftaran memakai Supabase Auth email/password. Metadata `username` dan
-`display_name` diteruskan ke trigger `handle_new_user`, yang membuat profil,
-pengaturan, streak, dan telur pertama. Jika konfirmasi email aktif, pengguna
-harus mengonfirmasi lewat tautan callback sebelum masuk.
+- **Akun pengguna** — daftar, masuk, konfirmasi email, dan profil.
+- **Kurikulum matriks** — chapter dan materi belajar dengan contoh, rumus, dan
+  visualisasi interaktif.
+- **Latihan dan kuis** — soal pilihan ganda dan numerik dengan pemeriksaan
+  jawaban melalui backend.
+- **Progres belajar** — pantau chapter, hasil kuis, aktivitas harian, XP, dan
+  streak.
+- **Gamifikasi** — level, telur dinosaurus, koleksi, dan lencana pencapaian.
+- **Preferensi akun** — avatar, tema, suara, aksesibilitas gerak, dan tampilan
+  streak.
+- **Proteksi data** — Row Level Security (RLS) membatasi data pribadi ke
+  pemiliknya; perubahan progres dilakukan melalui fungsi backend.
+
+## Screenshot
+
+Screenshot produk belum disertakan. Untuk melengkapi README, ambil screenshot
+halaman berikut:
+
+1. **Landing page** — tampilan utama dan pengenalan aplikasi.
+2. **Dashboard** — ringkasan progres, XP, streak, dan misi berikutnya.
+3. **Peta belajar** — daftar chapter beserta status progresnya.
+4. **Detail materi** — materi matriks dan visualisasi interaktif.
+5. **Halaman latihan** — tampilan soal dan interaksi menjawab.
+6. **Halaman progres** — statistik belajar, aktivitas, dan pencapaian.
+7. **Halaman koleksi** — telur dan dinosaurus yang telah dikumpulkan.
+8. **Halaman profil** — informasi akun dan preferensi pengguna.
+
+Screenshot login dan pendaftaran bersifat opsional. Setelah gambar tersedia,
+simpan di folder `docs/screenshots/` lalu tambahkan gambar yang dipilih di
+bagian ini.
+
+## Teknologi
+
+- [Next.js](https://nextjs.org/) 16 dengan App Router
+- [React](https://react.dev/) 19 dan [TypeScript](https://www.typescriptlang.org/)
+- [Supabase](https://supabase.com/) Auth, PostgreSQL, RLS, dan RPC
+- [Tailwind CSS](https://tailwindcss.com/) 4
+- [Bun](https://bun.sh/) sebagai package manager dan runtime script
+
+## Menjalankan secara lokal
+
+### Prasyarat
+
+- Bun 1.4.2 atau versi yang kompatibel
+- Project Supabase
+- Supabase CLI untuk menerapkan migrasi melalui terminal
+
+### Instalasi
+
+1. Clone repository dan masuk ke direktori proyek.
+2. Pasang dependensi:
+
+   ```bash
+   bun install
+   ```
+
+3. Salin `.env.example` menjadi `.env.local`, lalu isi variabel yang diperlukan:
+
+   ```dotenv
+   NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+   NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=your-publishable-key
+   NEXT_PUBLIC_SITE_URL=http://localhost:3000
+   SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+   ```
+
+   `SUPABASE_SERVICE_ROLE_KEY` hanya digunakan oleh seeder. Jangan pernah
+   menggunakan awalan `NEXT_PUBLIC_` untuk secret key atau memasukkannya ke
+   source control.
+
+4. Hubungkan Supabase CLI ke project, lalu terapkan migrasi:
+
+   ```bash
+   supabase login
+   supabase link --project-ref your-project-ref
+   supabase db push
+   ```
+
+   Alternatifnya, jalankan kedua file SQL di `supabase/migrations/` secara
+   berurutan melalui Supabase SQL Editor.
+
+5. Isi katalog kurikulum, soal, dinosaurus, dan lencana:
+
+   ```bash
+   bun run seed
+   ```
+
+6. Di Supabase Dashboard, buka **Authentication → URL Configuration**:
+   - Atur Site URL ke `http://localhost:3000`.
+   - Tambahkan `http://localhost:3000/auth/callback` ke daftar Redirect URLs.
+
+7. Jalankan aplikasi:
+
+   ```bash
+   bun dev
+   ```
+
+   Buka [http://localhost:3000](http://localhost:3000).
 
 ## Perintah
 
-- `bun dev` — server pengembangan.
-- `bun run build` — build produksi.
-- `bun run typecheck` — pemeriksaan TypeScript.
-- `bun run lint` — pemeriksaan ESLint.
-- `bun run seed` — menanam konten ke Supabase (butuh service role key).
+| Perintah | Keterangan |
+| --- | --- |
+| `bun dev` | Menjalankan server pengembangan |
+| `bun run build` | Membuat build produksi |
+| `bun start` | Menjalankan build produksi |
+| `bun run typecheck` | Memeriksa tipe TypeScript |
+| `bun run lint` | Menjalankan ESLint |
+| `bun run seed` | Mengisi katalog Supabase; memerlukan service role key |
 
-## Catatan pengembangan
+## Struktur proyek
 
-- Menambah atau mengubah materi/soal: edit `src/data`, lalu jalankan
-  `bun run seed`. Seeder melakukan upsert berdasarkan ID sehingga aman diulang.
-- Menambah aturan permainan baru: tambahkan fungsi/RPC di migrasi baru, lalu
-  panggil dari server action. Jangan menulis tabel progres langsung dari klien.
-- Jangan pernah menaruh service role key di variabel `NEXT_PUBLIC_*`.
+```text
+src/
+├── app/                 # Halaman dan route aplikasi
+├── components/          # Komponen UI, materi, kuis, dan gamifikasi
+├── data/                # Sumber konten yang dipakai oleh seeder
+├── features/screens/    # Tampilan tiap fitur
+├── lib/
+│   ├── actions/          # Server actions untuk operasi aplikasi
+│   ├── data/             # Pengambilan dan pemetaan data halaman
+│   └── supabase/         # Konfigurasi client Supabase
+└── proxy.ts              # Pemeriksaan sesi dan proteksi route
+
+scripts/                 # Seeder konten
+supabase/
+├── migrations/           # Skema, kebijakan akses, dan fungsi database
+└── config.toml           # Konfigurasi Supabase lokal
+```
+
+## Keamanan dan data
+
+- Klien aplikasi memakai Supabase publishable key.
+- Service role/secret key hanya diperlukan saat menjalankan seeder dan tidak
+  boleh diekspos ke browser.
+- Kunci jawaban disimpan terpisah dari data soal dan tidak dikirim ke klien.
+- Pemeriksaan jawaban, pencatatan hasil kuis, serta pemberian progres/reward
+  dijalankan melalui RPC di backend.
+- Kebijakan RLS membatasi data akun agar hanya dapat dibaca oleh pemiliknya.
+
+## Kontributor
+
+| Nama | Kontribusi |
+| --- | --- |
+| **Ikhsan** | Backend |
+| **Yasqi** | Frontend |
+| **Riki** | Ide aplikasi |
